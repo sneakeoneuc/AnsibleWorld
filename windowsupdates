@@ -1,0 +1,22 @@
+---
+- name: Install Windows Updates
+  hosts: windows
+  gather_facts: no
+  tasks:
+    - name: Install all available Windows updates
+      win_updates:
+        category_names:
+          - Updates
+        state: installed
+      register: update_result
+
+    - name: Reboot if required
+      win_reboot:
+        msg: "Rebooting after updates installation"
+        wait: yes
+      when: update_result.reboot_required
+
+    - name: Display update result
+      debug:
+        var: update_result
+sneakeoneuc@adm
